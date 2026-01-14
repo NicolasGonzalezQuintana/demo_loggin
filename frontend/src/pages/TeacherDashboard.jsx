@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getTeacherArea } from "@/services/areas";
+import Navbar from "@/components/Navbar";
 
 export default function TeacherDashboard() {
   const [data, setData] = useState(null);
@@ -17,7 +18,10 @@ export default function TeacherDashboard() {
   }, []);
 
   return (
-    <div className="min-h-screen p-6">
+  <div className="min-h-screen">
+    <Navbar />
+
+    <main className="mx-auto max-w-5xl p-6">
       <h1 className="text-2xl font-bold">Dashboard Profesor</h1>
 
       {err && <p className="mt-4 text-red-600">{err}</p>}
@@ -27,6 +31,7 @@ export default function TeacherDashboard() {
           {JSON.stringify(data, null, 2)}
         </pre>
       )}
-    </div>
+    </main>
+  </div>
   );
 }

@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -18,6 +17,16 @@ export default function Login() {
     await signIn(email, password);
     if (user?.role === "teacher") nav("/teacher");
     else nav("/student");
+  }
+  useEffect(() => {
+  if (user?.role === "teacher") nav("/teacher");
+  if (user?.role === "student") nav("/student");
+  }, [user, nav]);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    await signIn(email, password);
+    // NO redirigimos aquí: lo hace el useEffect
   }
 
   return (
