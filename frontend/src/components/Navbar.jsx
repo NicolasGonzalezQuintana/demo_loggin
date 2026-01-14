@@ -24,14 +24,19 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="secondary" onClick={() => nav("/student")}>
-            Estudiante
-          </Button>
-          <Button variant="secondary" onClick={() => nav("/teacher")}>
-            Profesor
-          </Button>
+            {user?.role === "student" && (
+                <Button variant="secondary" onClick={() => nav("/student")}>
+                Estudiante
+                </Button>
+            )}
 
-          <Button onClick={handleLogout}>Cerrar sesión</Button>
+            {user?.role === "teacher" && (
+                <Button variant="secondary" onClick={() => nav("/teacher")}>
+                Profesor
+                </Button>
+            )}
+
+            <Button onClick={handleLogout}>Cerrar sesión</Button>
         </div>
       </div>
     </header>
