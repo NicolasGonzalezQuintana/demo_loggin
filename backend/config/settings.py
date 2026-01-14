@@ -27,6 +27,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+]
 
 # Application definition
 
@@ -37,17 +45,30 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'corsheaders',
+    'accounts',
 ]
 
 MIDDLEWARE = [
+    # Seguridad base
     'django.middleware.security.SecurityMiddleware',
+    # CORS: debe ir arriba, antes de CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',
+    # Sesiones (cookies)
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # Middleware común
     'django.middleware.common.CommonMiddleware',
+    # CSRF (necesario para POST/PUT/DELETE con sesión)
     'django.middleware.csrf.CsrfViewMiddleware',
+    # Autenticación (request.user)
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # Mensajes
     'django.contrib.messages.middleware.MessageMiddleware',
+    # Protección clickjacking
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 ROOT_URLCONF = 'config.urls'
 

@@ -1,10 +1,32 @@
+import { useEffect, useState } from "react";
+import { getStudentArea } from "@/services/areas";
+
 export default function StudentDashboard() {
+  const [data, setData] = useState(null);
+  const [err, setErr] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const d = await getStudentArea();
+        setData(d);
+      } catch (e) {
+        setErr("No autorizado o sesión inválida (esperado si no eres estudiante).");
+      }
+    })();
+  }, []);
+
   return (
     <div className="min-h-screen p-6">
       <h1 className="text-2xl font-bold">Dashboard Estudiante</h1>
-      <p className="mt-2 text-slate-600">
-        Aquí irá el contenido para estudiantes.
-      </p>
+
+      {err && <p className="mt-4 text-red-600">{err}</p>}
+
+      {data && (
+        <pre className="mt-4 rounded bg-slate-100 p-4 text-sm">
+          {JSON.stringify(data, null, 2)}
+        </pre>
+      )}
     </div>
   );
 }
