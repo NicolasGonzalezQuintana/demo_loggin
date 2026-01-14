@@ -1,11 +1,11 @@
 import { api } from "@/services/api";
 import { ensureCsrf } from "@/services/csrf";
 
-export async function login(email, password) {
+export async function login(username, password) {
   const csrf = await ensureCsrf();
   await api.post(
     "/api/auth/login/",
-    { email, password },
+    { username, password },
     { headers: { "X-CSRFToken": csrf } }
   );
 }
