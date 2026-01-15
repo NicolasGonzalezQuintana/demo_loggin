@@ -9,6 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { getTeacherEnrollments } from "@/services/dashboard";
+import {Accordion, AccordionItem, AccordionTrigger, AccordionContent,} from "@/components/ui/accordion";
+
+
 
 export default function TeacherDashboard() {
   const [data, setData] = useState(null);
@@ -18,7 +22,7 @@ export default function TeacherDashboard() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [saving, setSaving] = useState(false);
-
+  const [enrollments, setEnrollments] = useState(null);
   async function reload() {
     const d = await getTeacherDashboard();
     setData(d);
@@ -28,6 +32,8 @@ export default function TeacherDashboard() {
     (async () => {
       try {
         await reload();
+        const data = await getTeacherEnrollments();
+        setEnrollments(data);
       } catch (e) {
         setErr("No autorizado o sesión inválida.");
       }
@@ -66,6 +72,7 @@ export default function TeacherDashboard() {
             <TabsTrigger value="resumen">Resumen</TabsTrigger>
             <TabsTrigger value="cursos">Mis cursos</TabsTrigger>
             <TabsTrigger value="anuncios">Anuncios</TabsTrigger>
+            <TabsTrigger value="alumnos">Alumnos</TabsTrigger>
           </TabsList>
 
           <TabsContent value="resumen" className="mt-4 space-y-3">
@@ -154,8 +161,51 @@ export default function TeacherDashboard() {
               ))}
             </div>
           </TabsContent>
+
+          <TabsContent value="alumnos" className="mt-4">
+            {!enrollments && (
+              <p className="text-sm text-slate-600">Cargando alumnos...</p>
+            )}
+            {enrollments && (
+              <Accordion type="single" collapsible>
+                {enrollments.courses.map((item) => (
+                  <AccordionItem
+                    key={item.course.id}
+                    value={String(item.course.id)}
+                  >
+                    <AccordionTrigger>
+                      {item.course.code} — {item.course.name} ({item.count})
+                    </AccordionTrigger>
+
+                    <AccordionContent>
+                      {item.students.length === 0 ? (
+                        <p className="text-sm text-slate-600">
+                          No hay estudiantes inscritos.
+                        </p>
+                      ) : (
+                        <div className="space-y-2">
+                          {item.students.map((s) => (
+                            <div
+                              key={s.id}
+                              className="rounded border p-2"
+                            >
+                              <p className="font-medium">{s.username}</p>
+                              <p className="text-xs text-slate-600">
+                                {s.email || "sin email"}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            )}
+          </TabsContent>
         </Tabs>
       )}
+                  
     </DashboardLayout>
   );
 }

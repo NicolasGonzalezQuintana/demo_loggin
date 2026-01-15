@@ -14,3 +14,8 @@ export async function createTeacherAnnouncement(payload) {
   const res = await api.post("/api/teacher/announcements/", payload);
   return res.data;
 }
+
+export async function getTeacherEnrollments() {
+  const res = await api.get("/api/teacher/enrollments/");
+  return res.data;
+}

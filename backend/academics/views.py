@@ -86,3 +86,42 @@ def teacher_create_announcement(request):
 
     ann = Announcement.objects.create(course=course, title=title, body=body)
     return JsonResponse({"detail": "ok", "announcement": _announcement_to_dict(ann)}, status=201)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsTeacher])
+def teacher_enrollments(request):
+    """
+    Retorna los cursos del profesor y la lista de estudiantes inscritos por curso.
+    """
+    courses = Course.objects.filter(teacher=request.user).order_by("code")
+
+    result = []
+
+    for course in courses:
+        enrollments = (
+            Enrollment.objects
+            .filter(course=course)
+            .select_related("student")
+        )
+
+        students = [
+            {
+                "id": e.student.id,
+                "username": e.student.username,
+                "email": e.student.email,
+            }
+            for e in enrollments
+        ]
+
+        result.append({
+            "course": {
+                "id": course.id,
+                "code": course.code,
+                "name": course.name,
+            },
+            "students": students,
+            "count": len(students),
+        })
+
+    return JsonResponse({ "courses": result })
