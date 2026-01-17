@@ -139,3 +139,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# ------------------------------------------------------------------
+# SESSION & SECURITY SETTINGS (Demo / Seguridad)
+# ------------------------------------------------------------------
+
+# Cierra sesión al cerrar el navegador
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Duración máxima de la sesión (30 minutos)
+SESSION_COOKIE_AGE = 60 * 30  # 30 minutos
+
+# Renueva la sesión en cada request (sliding session)
+SESSION_SAVE_EVERY_REQUEST = True

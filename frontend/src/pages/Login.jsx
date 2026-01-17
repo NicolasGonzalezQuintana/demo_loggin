@@ -12,6 +12,9 @@ export default function Login() {
   const nav = useNavigate();
   const { signIn, user } = useAuth();
 
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -24,7 +27,19 @@ export default function Login() {
   // 🔹 Submit SOLO hace login (no redirige)
   async function handleSubmit(e) {
     e.preventDefault();
-    await signIn(username, password);
+    setError("");
+    setLoading(true);
+
+    try {
+      await signIn(username, password);
+      // NO redirigimos aquí: lo hace el useEffect cuando user se actualiza
+    } catch (err) {
+      // Mensaje genérico (seguro)
+      setError("Usuario o contraseña incorrectos.");
+      setPassword("");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -33,7 +48,6 @@ export default function Login() {
         <CardHeader>
           <CardTitle>Login</CardTitle>
         </CardHeader>
-
         <CardContent className="space-y-4">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
@@ -55,9 +69,16 @@ export default function Login() {
               />
             </div>
 
-            <Button className="w-full" type="submit">
-              Ingresar
+            <Button className="w-full" type="submit" disabled={loading}>
+              {loading ? "Ingresando..." : "Ingresar"}
             </Button>
+
+            {error && (
+              <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                {error}
+              </div>
+            )}
+
           </form>
         </CardContent>
       </Card>

@@ -1,37 +1,40 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+
 import Login from "@/pages/Login";
-import StudentDashboard from "@/pages/StudentDashboard";
-import TeacherDashboard from "@/pages/TeacherDashboard";
-import ProtectedRoute from "@/routes/ProtectedRoute";
-import RoleRoute from "@/routes/RoleRoute";
+import RoleLayout from "@/layouts/RoleLayout";
+
+import TeacherHome from "@/pages/teacher/TeacherHome";
+import TeacherCourses from "@/pages/teacher/TeacherCourses";
+import TeacherAnnouncements from "@/pages/teacher/TeacherAnnouncements";
+import TeacherStudents from "@/pages/teacher/TeacherStudents";
+
+import StudentHome from "@/pages/student/StudentHome";
+import StudentCourses from "@/pages/student/StudentCourses";
+import StudentAnnouncements from "@/pages/student/StudentAnnouncements";
 
 export default function AppRouter() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
+    <Routes>
+      <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/student"
-          element={
-            <RoleRoute allowedRoles={["student"]}>
-              <StudentDashboard />
-            </RoleRoute>
-          }
-        />
+      {/* Profesor */}
+      <Route path="/teacher" element={<RoleLayout role="teacher" />}>
+        <Route index element={<TeacherHome />} />
+        <Route path="courses" element={<TeacherCourses />} />
+        <Route path="announcements" element={<TeacherAnnouncements />} />
+        <Route path="students" element={<TeacherStudents />} />
+      </Route>
 
-        <Route
-          path="/teacher"
-          element={
-            <RoleRoute allowedRoles={["teacher"]}>
-              <TeacherDashboard />
-            </RoleRoute>
-          }
-        />
+      {/* Estudiante */}
+      <Route path="/student" element={<RoleLayout role="student" />}>
+        <Route index element={<StudentHome />} />
+        <Route path="courses" element={<StudentCourses />} />
+        <Route path="announcements" element={<StudentAnnouncements />} />
+      </Route>
 
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-    </BrowserRouter>
+      {/* Default */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   );
 }
